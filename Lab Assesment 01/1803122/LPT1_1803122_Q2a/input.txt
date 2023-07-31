@@ -1,0 +1,6 @@
+WHILE a>b: 
+    a++;   
+WHILE a!=b: 
+    a--;   
+WHILE a<b: 
+    a+=b;  

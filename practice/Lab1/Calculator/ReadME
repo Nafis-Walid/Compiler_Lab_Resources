@@ -1,0 +1,140 @@
+ -------------some basic knowledge------------------
+|   FILE NAME   | FILE TYPE     |   PROCESSED WITH  |
+-----------------------------------------------------
+|   .l file     | lexer file    |   flex            |
+-----------------------------------------------------
+|   .y file     | perser file   |   bison           |
+ ---------------------------------------------------
+
+===================================================Makefile===============================================================
+Command:        bison -d filename.y
+Explanation:    this will create two files with extension
+                                        "filename.tab.c" & "filename.tab.h"
+                recall filename.y is the parser file
+___________________________________________Important_______________________________________
+|in this stage we have to include the filename.tab.h file to the lexer file(filename.l) file by using |
+|the command below                                                                        |        
+|                    %{                                                                   |
+|                    #include "cal.tab.h"                                                 |
+|                    %}                                                                   |              
+-------------------------------------------------------------------------------------------     
+_______________________________________________________________________________________________________________                                            
+Command:        flex filename.l
+Explanation:    creates a file named
+                                lex.yy.c
+_______________________________________________________________________________________________________________
+Command:        gcc -o cal.exe cal.tab.c lex.yy.c
+Explanation:    compiles two files combinedly and creates an executable file named cal.exe
+_______________________________________________________________________________________________________________
+Command:        cal <input.txt> output.txt
+Explanation:    executes the content of input.txt and after execution, the result of the execution is stored in 
+                output.txt
+_______________________________________________________________________________________________________________
+
+we will not use this command individually. Rather, we will create a file called Makefile(for this you have to 
+add the Makefile extension of VSCode). on the Makefile file, we will create a label(in here it is called main), 
+and under that label we will write this command sequentially. by using make file, from terminal we can execute 
+these commands just by typing 
+                                                make <label_name>
+                                                Example:
+                                                    make main
+and after hitting enter all the command line inside the Makefile file will execute sequentially, and the 
+corresponding operations will be performed.
+________________________________________________________________________________________________________________
+                                                    Summary
+* process the parser file using bison(command: bison -d parser.y)
+        * this will create two extra file with .tab.c and .tab.h
+        * Include the file with extension .tab.h to the lexer file
+* process the lexer file using lex(command: flex lexer.l)
+        * this will create lex.yy.c file
+* compile the file with .tab.c extension and lex.yy.c file at a time(gcc filename.tab.c lex.yy.c)
+        * this will create an exe file. by default it will be a.exe
+* then we have to run the content of input.txt file with a.exe file(command a <input.txt> output.txt)
+extension.  we have to include the file with .tab.h extension to the lexer file. Then  
+=================================================End of Makefile==========================================================
+
+
+
+
+
+
+====================================================LEXER FILE============================================================
+
+There are 4 segment in the lexer file. I will explain what does these segments do!
+_______________________________________________________________________________________________________________
+segment 1:
+"%option noyywrap" is used to handle multiple input files
+_______________________________________________________________________________________________________________
+segment 2:
+every thing we write inside this %{...%} parenthesis is basically a c code segment
+
+we have included the cal.tab.h file we got from bison -d cal.y
+_______________________________________________________________________________________________________________
+segment 3:
+___________________patterns______________________
+|* delim     ->  a space or a tab character     |
+|* ws        ->  one or more delim(s)           |
+|* digit     ->  can be anything from 0 to 9    |
+|* number    ->  one or more digit(s)           |
+|* letter    ->  lowercase or uppercase letter  |
+|* id        ->  one or more letter(s)          |
+-------------------------------------------------
+
+the %% just used to denote the end of a segment
+_______________________________________________________________________________________________________________
+segment 4:
+this segement is very important. We have to return token name(described in parser file) for each token pattern
+used in out input file. input.txt contains-
+                                var + 6
+we can tokenize it as-
+                    <ID><ADD><NUM>
+so, 4 distinct tokens.
+
+now we have to return the corresponding token name for each matched pattern which we created in segment 3
+* as whitespaces(ws) are unnecessary so we return nothing for this
+* if anything matches the number patter then we return the NUM token
+* for "+" we return ADD
+* for id we return ID
+these patterns and token name are not fixed, we can use customized name
+
+%% is used to denote the end of the segment
+=================================================END OF LEXER FILE========================================================
+
+
+
+
+
+====================================================PARSER FILE===========================================================
+in parser file there is also 4 segments
+
+_______________________________________________________________________________________________________________
+segment 1:
+every thing we write inside this %{...%} parenthesis is basically a c code segment
+leave everything as it is
+_______________________________________________________________________________________________________________
+segment 2:
+here we have to announce all the token name used in our input file
+%% is used to denote the end of the segment
+_______________________________________________________________________________________________________________
+segment 3:
+here we have to add the production rule of our grammar
+_______________________________________________________________________________________________________________
+segment 4:
+here we have to add main() function and the yyerror() function
+
+inside main function, the yyparse function basically does the parsing from the production rule
+if parsing finished then the next line will be executed, otherwise not
+====================================================END OF PARSER FILE====================================================
+
+
+
+
+
+
+
+
+
+
+
+
+

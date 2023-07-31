@@ -1,0 +1,5 @@
+LET A as INT;
+A = IN();
+LET B as INT;
+B = A + 7;
+OUT(B);

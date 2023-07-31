@@ -1,0 +1,2 @@
+def X as INT;  
+FOR_LOOP ( Y from 10 to 20.0);  
